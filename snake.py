@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 #initialize pygame
 pygame.init()
@@ -32,21 +33,50 @@ food = (random.randrange(0, width, tile), random.randrange(0, height, tile))
 score = 0
 font = pygame.font.Font(None, 30)
 
+#adding pulse effect
+pulse_size = tile // 2
+pulse_speed = 0.1
+pulse_angle = 0
+
 #game loop variables
 crawling = True
 clock = pygame.time.Clock()
 
+#function to draw snake
 def draw_snake(snake):
     """draw the snake with the styled design"""
     for i, segment in enumerate(snake):
+        x, y = segment
         if i == 0:
             pygame.draw.rect(screen, blue, (segment[0], segment[1], tile, tile), border_radius=8) #head
+            draw_snake_face(x, y)
         else:
             pygame.draw.rect(screen, blue, (segment[0], segment[1], tile, tile), border_radius=5)  # head
 
+#function to draw snake face
+def draw_snake_face(x, y):
+    """draw a simple face on the snake head"""
+    eye_radius = 4
+    eye_x_offset = 6
+    eye_y_offset = 5
+
+    #eyes
+    pupil_radius = 3
+    pygame.draw.circle(screen, white, (int(x + eye_x_offset), int(y + eye_y_offset)), pupil_radius) #left eye
+    pygame.draw.circle(screen, white, (int(x + tile - eye_x_offset), int(y + eye_y_offset)), pupil_radius) #right eye
+
+    #mouth
+    pygame.draw.arc(screen, black, (int(x + 4), int(y + 10), 10, 6), math.pi, 2 * math.pi, 2) #smiling mouth
+
+# function to draw apple
 def draw_apple(x, y):
     """draw an apple using pygame shapes"""
-    pygame.draw.circle(screen, red, (x + tile // 2, y + tile // 2), tile // 2)
+    global pulse_size, pulse_angle
+
+    pulse_size = tile // 2 + int(math.sin(pulse_angle) * 3)
+    pulse_angle += pulse_speed
+
+    pygame.draw.circle(screen, red, (int(x + tile // 2), int(y + tile // 2)), int(pulse_size))
     pygame.draw.rect(screen, green, (x + tile // 3, y - 5, 6, 6), border_radius=3)
     pygame.draw.line(screen, brown, (x + tile // 2, y - 3), (x + tile // 2, y + 3), 3)
 
