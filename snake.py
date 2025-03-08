@@ -10,6 +10,7 @@ height = 400
 tile = 20
 white, green, red, black = (255, 255, 255), (0, 255, 0), (255, 0, 0), (0, 0, 0)
 blue = (0, 0, 255)
+brown = (139, 69, 19)
 
 #game window
 screen = pygame.display.set_mode((width, height))
@@ -42,6 +43,12 @@ def draw_snake(snake):
             pygame.draw.rect(screen, blue, (segment[0], segment[1], tile, tile), border_radius=8) #head
         else:
             pygame.draw.rect(screen, blue, (segment[0], segment[1], tile, tile), border_radius=5)  # head
+
+def draw_apple(x, y):
+    """draw an apple using pygame shapes"""
+    pygame.draw.circle(screen, red, (x + tile // 2, y + tile // 2), tile // 2)
+    pygame.draw.rect(screen, green, (x + tile // 3, y - 5, 6, 6), border_radius=3)
+    pygame.draw.line(screen, brown, (x + tile // 2, y - 3), (x + tile // 2, y + 3), 3)
 
 while crawling:
     screen.blit(background, (0, 0)) #clear screen
@@ -79,7 +86,7 @@ while crawling:
     draw_snake(snake)
 
     #draw food
-    pygame.draw.rect(screen, red, (food[0], food[1], tile, tile))
+    draw_apple(food[0], food[1])
 
     #display score
     score_text = font.render(f"score: {score}", True, white)
@@ -93,5 +100,5 @@ screen.blit(game_over_bg, (0, 0))
 game_over_text = font.render(f"Game over! final score: {score}", True, red)
 screen.blit(game_over_text, (width // 4, height // 2))
 pygame.display.update()
-pygame.time.delay(2000) #show for 2 seconds before closing
+pygame.time.delay(3000) #show for 2 seconds before closing
 pygame.quit()
